@@ -17,14 +17,14 @@ export default function ReturnStock() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/return-stock", {
+      const response = await fetch("https://led-inventory-backend.onrender.com/api/return-stock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ techId, prodId, qty: quantity }),
       });
 
       if (response.ok) {
-        alert("Stock Returned back to SQLite Database Server! 📥");
+        alert("Stock Returned back to Cloud DB Server! 📥");
         await fetchInitialData();
         setQuantity("");
         setProdId("");

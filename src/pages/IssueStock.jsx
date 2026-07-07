@@ -15,7 +15,7 @@ export default function IssueStock() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/issue-stock", {
+      const response = await fetch("https://led-inventory-backend.onrender.com/api/issue-stock", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -26,8 +26,8 @@ export default function IssueStock() {
       });
 
       if (response.ok) {
-        alert("Stock Issued & Saved in Database! 🚚");
-        await fetchInitialData(); // DB se live fresh counts uthayega
+        alert("Stock Issued & Saved in Cloud DB! 🚚");
+        await fetchInitialData();
         setQuantity("");
         setSelectedProdId("");
         setSelectedTechId("");

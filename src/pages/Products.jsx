@@ -12,7 +12,7 @@ export default function Products() {
   const [productName, setProductName] = useState("");
   const [stock, setStock] = useState("");
 
-  // 🚀 DB Add Logic
+  // 🚀 Add Logic
   const handleAddProduct = async () => {
     if (!category || !productName || !stock) {
       alert("Please fill all fields");
@@ -20,15 +20,15 @@ export default function Products() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/products", {
+      const response = await fetch("https://led-inventory-backend.onrender.com/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, name: productName, stock }),
       });
 
       if (response.ok) {
-        alert("Product Added to SQLite Database! 🗄️");
-        await fetchInitialData(); // Live reload from DB
+        alert("Product Added to Cloud Database! 🗄️");
+        await fetchInitialData();
         resetForm();
       } else {
         const err = await response.json();
@@ -39,7 +39,7 @@ export default function Products() {
     }
   };
 
-  // 🚀 DB Edit Logic
+  // 🚀 Edit Logic
   const handleSaveEdit = async () => {
     if (!category || !productName || !stock) {
       alert("Please fill all fields");
@@ -47,14 +47,14 @@ export default function Products() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${currentProductId}`, {
+      const response = await fetch(`https://led-inventory-backend.onrender.com/api/products/${currentProductId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, name: productName, stock }),
       });
 
       if (response.ok) {
-        alert("Product Details Updated in DB! ✏️");
+        alert("Product Details Updated in Cloud! ✏️");
         await fetchInitialData();
         resetForm();
       }
@@ -63,15 +63,15 @@ export default function Products() {
     }
   };
 
-  // 🚀 DB Delete Logic
+  // 🚀 Delete Logic
   const handleDeleteProduct = async (id, name) => {
     if (window.confirm(`Are you sure you want to permanently delete ${name}?`)) {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        const response = await fetch(`https://led-inventory-backend.onrender.com/api/products/${id}`, {
           method: "DELETE",
         });
         if (response.ok) {
-          alert("Product Deleted from Database!");
+          alert("Product Deleted from Cloud DB!");
           await fetchInitialData();
         }
       } catch (err) {

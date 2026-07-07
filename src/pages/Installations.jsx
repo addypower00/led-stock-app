@@ -19,14 +19,14 @@ export default function Installations() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/installations", {
+      const response = await fetch("https://led-inventory-backend.onrender.com/api/installations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ techId, callId, customerName, standSize }),
       });
 
       if (response.ok) {
-        alert("Installation Logged in Database & Stock Deducted! 👍");
+        alert("Installation Logged in Cloud & Stock Deducted! 👍");
         await fetchInitialData();
         setCallId("");
         setCustomerName("");

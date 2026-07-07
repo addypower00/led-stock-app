@@ -8,10 +8,10 @@ export const InventoryProvider = ({ children }) => {
   const [installations, setInstallations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🚀 1. Database se Initial Data Load karne ka Function (Fetch API)
+  // 🚀 Live Render API se Data Load karne ka Function
   const fetchInitialData = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/initial-data");
+      const response = await fetch("https://led-inventory-backend.onrender.com/api/initial-data");
       const data = await response.json();
       if (response.ok) {
         setProducts(data.products);
@@ -19,13 +19,12 @@ export const InventoryProvider = ({ children }) => {
         setInstallations(data.installations);
       }
     } catch (err) {
-      console.error("Failed to sync with SQLite Server: ", err);
+      console.error("Failed to sync with Live Render Server: ", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // App start hote hi automatic data sync hoga
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -39,12 +38,12 @@ export const InventoryProvider = ({ children }) => {
         setTechnicians,
         installations,
         setInstallations,
-        fetchInitialData, // Is function ko baki pages me re-fetch ke liye export kar rahe hain
+        fetchInitialData,
       }}
     >
       {!loading ? children : (
         <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white font-bold text-xl">
-          🔄 Connecting to SCIMS Central Database Server...
+          🔄 Connecting to SCIMS Central Cloud Database Server...
         </div>
       )}
     </InventoryContext.Provider>
