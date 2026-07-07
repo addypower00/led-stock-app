@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -6,15 +6,19 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+  // 🛡️ Page khulte hi agar pehle se koi login bacha ho, to use khatam karo
+  useEffect(() => {
+    localStorage.removeItem("isAuthenticated");
+  }, []);
 
-    // 🔐 APNA MASTER USERNAME AUR PASSWORD YAHAN SET KARO:
-    // Tum chaho to niche "admin" aur "admin123" ko badal kar apna pasand ka rakh sakte ho
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("isAuthenticated", "true"); // Browser me login session save ho gaya
+  const handleLogin = (e) => {
+    e.preventDefault(); // Page ko reload hone se rokna sabse zaroori hai
+
+    // 🔐 MASTER CREDENTIALS CHECKING
+    if (username.trim() === "admin" && password === "admin123") {
+      localStorage.setItem("isAuthenticated", "true"); // Local memory set hui
       alert("Login Successful! Welcome to SCIMS Portal 🔓");
-      navigate("/dashboard"); // Andar bhejo
+      navigate("/dashboard", { replace: true }); // Direct force redirect
     } else {
       alert("⚠️ Invalid Username or Password! Access Denied.");
     }
@@ -37,6 +41,7 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+              required
             />
           </div>
 
@@ -48,6 +53,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+              required
             />
           </div>
 
