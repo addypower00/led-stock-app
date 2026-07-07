@@ -1,0 +1,58 @@
+export const technicians = [
+  {
+    id: 1,
+    name: "nasir",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 2,
+    name: "ravi baghel",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 3,
+    name: "hasnain",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 4,
+    name: "ravi",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 5,
+    name: "Subhash",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+{
+    id: 6,
+    name: "tinku sagar",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 7,
+    name: "Rajeev",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  {
+    id: 8,
+    name: "Arun",
+    stock32: 0,
+    stock43: 0,
+    stock5565: 0,
+  },
+  ];
