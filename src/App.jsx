@@ -9,12 +9,12 @@ import Installations from "./pages/Installations";
 import Transactions from "./pages/Transactions";
 import Login from "./pages/Login";
 
-// 🛡️ Route Guard Component (Jo checking karega ki user logged in hai ya nahi)
+// 🛡️ Strict Route Guard: Ye checking karega ki user logged in hai ya nahi
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
   
   if (!isAuthenticated) {
-    // Agar login nahi hai, to seedhe khich kar Login page par fenk do
+    // 🔥 Agar "isAuthenticated" true nahi hai, to direct login page (/) par bhagao
     return <Navigate to="/" replace />;
   }
   return children;
@@ -23,30 +23,32 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
-      {/* 🔑 Public Route: Login Page */}
+      {/* 🔑 Main Base Page: Login Screen */}
       <Route path="/" element={<Login />} />
 
-      {/* 🔒 Protected Routes: Ye saare panno par lock lag gaya hai */}
-      <Route path="/*" element={
-        <ProtectedRoute>
-          <div className="flex bg-gray-100 min-h-screen">
-            <Sidebar />
-            <div className="flex-1 lg:ml-64 transition-all duration-300">
-              <Routes>
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/issue-stock" element={<IssueStock />} />
-                <Route path="/return-stock" element={<ReturnStock />} />
-                <Route path="/technician-stock" element={<TechnicianStock />} />
-                <Route path="/installations" element={<Installations />} />
-                <Route path="/transactions" element={<Transactions />} />
-              </Routes>
-            </div>
-          </div>
-        </ProtectedRoute>
-      } />
+      {/* 🔒 Protected Routes: In panno ko bina login koi nahi dekh sakta */}
+      <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+      <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
+      <Route path="/issue-stock" element={<ProtectedRoute><Layout><IssueStock /></Layout></ProtectedRoute>} />
+      <Route path="/return-stock" element={<ProtectedRoute><Layout><ReturnStock /></Layout></ProtectedRoute>} />
+      <Route path="/technician-stock" element={<ProtectedRoute><Layout><TechnicianStock /></Layout></ProtectedRoute>} />
+      <Route path="/installations" element={<ProtectedRoute><Layout><Installations /></Layout></ProtectedRoute>} />
+      <Route path="/transactions" element={<ProtectedRoute><Layout><Transactions /></Layout></ProtectedRoute>} />
+
+      {/* 🚨 Wrong URL Fallback: Agar koi galat link dale, to bhi login par bhejo */}
+      <Route path="*" replace element={<Navigate to="/" />} />
     </Routes>
   );
 }
 
-export default App;
+// 📦 Chota sa Layout Component taaki Sidebar sahi se dikhe
+const Layout = ({ children }) => {
+  return (
+    <div className="flex bg-gray-100 min-h-screen">
+      <Sidebar />
+      <div className="flex-1 lg:ml-64 transition-all duration-300">
+        {children}
+      </div>
+    </div>
+  );
+};
