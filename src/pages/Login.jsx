@@ -1,38 +1,63 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    navigate("/dashboard");
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    // 🔐 APNA MASTER USERNAME AUR PASSWORD YAHAN SET KARO:
+    // Tum chaho to niche "admin" aur "admin123" ko badal kar apna pasand ka rakh sakte ho
+    if (username === "admin" && password === "admin123") {
+      localStorage.setItem("isAuthenticated", "true"); // Browser me login session save ho gaya
+      alert("Login Successful! Welcome to SCIMS Portal 🔓");
+      navigate("/dashboard"); // Andar bhejo
+    } else {
+      alert("⚠️ Invalid Username or Password! Access Denied.");
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-xl shadow-lg w-96">
-        <h1 className="text-3xl font-bold text-center mb-6">
-          LED Inventory Management
-        </h1>
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl border border-gray-100">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold text-gray-800 tracking-tight">SCIMS PORTAL</h1>
+          <p className="text-sm text-gray-500 mt-1">LED Inventory Control System</p>
+        </div>
 
-        <input
-          type="text"
-          placeholder="Username"
-          className="w-full border p-3 rounded mb-4"
-        />
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-2">Username</label>
+            <input
+              type="text"
+              placeholder="Enter admin username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+            />
+          </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full border p-3 rounded mb-4"
-        />
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-2">Password</label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full border border-gray-300 p-3.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition font-medium"
+            />
+          </div>
 
-        <button
-  onClick={handleLogin}
-  className="w-full bg-blue-600 text-white p-3 rounded"
->
-  Login
-</button>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3.5 rounded-xl font-bold shadow-lg shadow-blue-500/20 transition duration-150 uppercase tracking-wider text-sm"
+          >
+            Secure Login 🔐
+          </button>
+        </form>
       </div>
     </div>
   );
