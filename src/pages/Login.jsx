@@ -7,13 +7,17 @@ export default function Login() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     
-    const correctUser = localStorage.getItem("admin_user") || "admin";
-    const correctPwd = localStorage.getItem("admin_pwd") || "admin123";
+    // 🛡️ Bulletproof Fallback: Agar local storage khali hai, toh defaults set rakho
+    const savedUser = localStorage.getItem("admin_user");
+    const savedPwd = localStorage.getItem("admin_pwd");
+
+    const correctUser = savedUser ? savedUser.trim() : "admin";
+    const correctPwd = savedPwd ? savedPwd : "admin123";
 
     if (username.trim() === correctUser && password === correctPwd) {
       localStorage.setItem("isAuthenticated", "true");
       alert("Access Granted. SCIMS Framework Unlocked! 🔓");
-      window.location.href = "/dashboard";
+      window.location.href = "/dashboard"; 
     } else {
       alert("Access Denied: Invalid Security Passphrase or Username!");
     }
@@ -78,7 +82,7 @@ export default function Login() {
           </div>
         </form>
 
-        {/* 🌟 Developer Credit on Login Screen */}
+        {/* Developer Credit */}
         <div className="pt-4 border-t border-slate-800/60 space-y-1.5">
           <p className="text-xs font-bold text-slate-300 tracking-wide">
             👨‍💻 This software is developed by <span className="text-indigo-400 font-extrabold">Aditya Dixit</span>
