@@ -10,7 +10,6 @@ export const InventoryProvider = ({ children }) => {
 
   const BACKEND_URL = "https://led-inventory-backend.onrender.com/api";
 
-  // 🚀 Backend se poora data load karne ka function
   const fetchInitialData = async () => {
     try {
       const response = await fetch(`${BACKEND_URL}/initial-data`);
@@ -27,35 +26,37 @@ export const InventoryProvider = ({ children }) => {
     }
   };
 
-  // ➕ 1. Add Product Function
+  // ➕ 1. Add Product (Exact Matching Schema)
   const addProduct = async (productData) => {
     const response = await fetch(`${BACKEND_URL}/products`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        product_name: productData.name, // Mapping to backend column
-        qty: productData.quantity       // Mapping to backend column
+        category: productData.category,
+        name: productData.name,
+        stock: Number(productData.stock)
       }),
     });
     if (!response.ok) throw new Error("Failed to add product");
-    await fetchInitialData(); // Database se refresh karo list
+    await fetchInitialData();
   };
 
-  // 🔄 2. Update Product Function
+  // 🔄 2. Update Product (Exact Matching Schema)
   const updateProduct = async (id, updatedData) => {
     const response = await fetch(`${BACKEND_URL}/products/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        product_name: updatedData.name,
-        qty: updatedData.quantity
+        category: updatedData.category,
+        name: updatedData.name,
+        stock: Number(updatedData.stock)
       }),
     });
     if (!response.ok) throw new Error("Failed to update product");
     await fetchInitialData();
   };
 
-  // 🗑️ 3. Delete Product Function
+  // 🗑️ 3. Delete Product
   const deleteProduct = async (id) => {
     const response = await fetch(`${BACKEND_URL}/products/${id}`, {
       method: "DELETE",
@@ -84,10 +85,10 @@ export const InventoryProvider = ({ children }) => {
       }}
     >
       {!loading ? children : (
-        <div className="flex items-center justify-center min-h-screen bg-slate-950 text-white font-bold text-xl tracking-wide">
+        <div className="flex items-center justify-center min-h-screen bg-slate-950 text-white font-bold text-xl">
           <div className="text-center space-y-4">
             <div className="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-slate-400 font-medium text-sm animate-pulse">🔄 Connecting to SCIMS Central Cloud Database Server...</p>
+            <p className="text-slate-400 text-sm font-medium animate-pulse">🔄 Connecting to SCIMS SQL Server...</p>
           </div>
         </div>
       )}

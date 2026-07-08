@@ -3,39 +3,44 @@ import { InventoryContext } from "../context/InventoryContext";
 
 export default function Products() {
   const { products, addProduct, updateProduct, deleteProduct } = useContext(InventoryContext);
+  
+  // Add Form States
   const [name, setName] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [category, setCategory] = useState("Wall Mount");
+  const [stock, setStock] = useState("");
   
   // Edit States
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
-  const [editQuantity, setEditQuantity] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+  const [editStock, setEditStock] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !quantity) return alert("Saari fields bharna zaroori hai!");
+    if (!name.trim() || !stock) return alert("Bhai, saari fields bharna zaroori hai!");
     
     try {
-      await addProduct({ name: name.trim(), quantity: Number(quantity) });
-      alert("Product successfully ledger me add ho gaya! 📦");
+      await addProduct({ category, name: name.trim(), stock: Number(stock) });
+      alert("Product successfully database me add ho gaya! 📦");
       setName("");
-      setQuantity("");
+      setStock("");
     } catch (error) {
       console.error(error);
-      alert("Database link fail: Ek baar backend api routes check karein.");
+      alert("Database error: Add function failed.");
     }
   };
 
   const startEdit = (prod) => {
     setEditingId(prod.id);
-    setEditName(prod.product_name || prod.name || "");
-    setEditQuantity(prod.qty ?? prod.quantity ?? 0);
+    setEditName(prod.name || "");
+    setEditCategory(prod.category || "Wall Mount");
+    setEditStock(prod.stock !== undefined ? prod.stock : 0);
   };
 
   const handleUpdate = async (id) => {
-    if (!editName.trim() || !editQuantity) return alert("Fields khali nahi chhod sakte!");
+    if (!editName.trim() || !editStock) return alert("Fields khali nahi chhod sakte!");
     try {
-      await updateProduct(id, { name: editName.trim(), quantity: Number(editQuantity) });
+      await updateProduct(id, { category: editCategory, name: editName.trim(), stock: Number(editStock) });
       alert("Product details updated! 🔄");
       setEditingId(null);
     } catch (error) {
@@ -45,10 +50,10 @@ export default function Products() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Aditya bhai, kya aap sach me is product ko delete karna chahte hain?")) {
+    if (window.confirm("Aditya bhai, kya aap sach me is product ko hamesha ke liye delete karna chahte hain?")) {
       try {
         await deleteProduct(id);
-        alert("Product deleted from ledger! 🚫");
+        alert("Product deleted from database! 🚫");
       } catch (error) {
         console.error(error);
         alert("Delete failed!");
@@ -60,52 +65,63 @@ export default function Products() {
     <div className="space-y-8 p-2 md:p-6 max-w-[1600px] mx-auto min-h-screen bg-gray-50/50">
       <div>
         <h1 className="text-3xl font-black text-gray-900 tracking-tight">Products Registry</h1>
-        <p className="text-sm text-gray-500 mt-1 font-medium">Manage master catalog, update quantities, and filter stock baselines.</p>
+        <p className="text-sm text-gray-500 mt-1 font-medium">Manage master catalog, live warehouse stock levels, and item components.</p>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-        {/* Form Panel */}
+        {/* 📑 Left Side Form */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm">
           <h2 className="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
-            <span>➕</span> Register New Product Line
+            <span>➕</span> Register New Item
           </h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Item Label / Specification</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Inventory Segment</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-semibold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              >
+                <option value="Wall Mount">Wall Mount</option>
+                <option value="Parts">Parts / Circuit Modules</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Item Nomenclature</label>
               <input
                 type="text"
                 placeholder="e.g., 32-inch Wall Mount"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+                className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Initial Lot Quantity</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Lot Volume (Stock)</label>
               <input
                 type="number"
                 placeholder="0"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
+                value={stock}
+                onChange={(e) => setStock(e.target.value)}
+                className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 required
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-500/10 transition"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-bold text-sm transition"
             >
               Commit to Warehouse Ledger
             </button>
           </form>
         </div>
 
-        {/* Table Grid */}
+        {/* 📊 Right Side Table */}
         <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-lg font-bold text-gray-800">Warehouse Master Stock</h2>
-            <p className="text-xs text-gray-400 mt-0.5">Verified inventory modules physically present in storage</p>
+            <p className="text-xs text-gray-400 mt-0.5">Real-time variables matching corporate SQLite records</p>
           </div>
 
           <div className="overflow-x-auto">
@@ -113,22 +129,34 @@ export default function Products() {
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="bg-gray-50/70 text-gray-500 text-xs font-bold uppercase tracking-wider border-b border-gray-100">
-                    <th className="p-4 pl-6">SKU ID</th>
-                    <th className="p-4">Product Nomenclature</th>
-                    <th className="p-4">Available Stock</th>
-                    <th className="p-4 text-center">Actions</th>
+                    <th className="p-4 pl-6">Segment</th>
+                    <th className="p-4">Item Name</th>
+                    <th className="p-4">Stock Balance</th>
+                    <th className="p-4 text-center">Actions System</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-sm font-medium text-gray-600">
                   {products.map((prod, index) => {
-                    const displayQty = prod.qty !== undefined ? prod.qty : (prod.quantity !== undefined ? prod.quantity : 0);
-                    const displayName = prod.product_name || prod.name || "Unnamed Module";
                     const isEditing = editingId === prod.id;
+                    const displayStock = prod.stock !== undefined ? prod.stock : 0;
 
                     return (
                       <tr key={prod.id || index} className="hover:bg-gray-50/50 transition">
-                        <td className="p-4 pl-6 text-xs font-mono text-indigo-600 font-semibold">
-                          #SKU-{1000 + (prod.id || index)}
+                        <td className="p-4 pl-6">
+                          {isEditing ? (
+                            <select
+                              value={editCategory}
+                              onChange={(e) => setEditCategory(e.target.value)}
+                              className="border border-gray-300 p-1 rounded-lg text-xs"
+                            >
+                              <option value="Wall Mount">Wall Mount</option>
+                              <option value="Parts">Parts</option>
+                            </select>
+                          ) : (
+                            <span className="text-xs bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-md font-bold text-slate-600">
+                              {prod.category}
+                            </span>
+                          )}
                         </td>
                         
                         <td className="p-4">
@@ -140,7 +168,7 @@ export default function Products() {
                               className="border border-gray-300 p-1.5 rounded-lg text-sm w-full font-medium"
                             />
                           ) : (
-                            <span className="text-gray-900 font-bold">{displayName}</span>
+                            <span className="text-gray-900 font-bold">{prod.name}</span>
                           )}
                         </td>
 
@@ -148,17 +176,17 @@ export default function Products() {
                           {isEditing ? (
                             <input
                               type="number"
-                              value={editQuantity}
-                              onChange={(e) => setEditQuantity(e.target.value)}
+                              value={editStock}
+                              onChange={(e) => setEditStock(e.target.value)}
                               className="border border-gray-300 p-1.5 rounded-lg text-sm w-20 font-mono"
                             />
                           ) : (
                             <span className={`inline-block font-mono font-bold px-2.5 py-1 rounded-lg text-xs ${
-                              displayQty > 0 
+                              displayStock > 10 
                                 ? "bg-emerald-50 text-emerald-700 border border-emerald-100" 
                                 : "bg-rose-50 text-rose-700 border border-rose-100"
                             }`}>
-                              {displayQty} pcs
+                              {displayStock} pcs
                             </span>
                           )}
                         </td>
@@ -168,7 +196,7 @@ export default function Products() {
                             <>
                               <button
                                 onClick={() => handleUpdate(prod.id)}
-                                className="bg-emerald-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold"
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold"
                               >
                                 Save ✅
                               </button>
@@ -183,13 +211,13 @@ export default function Products() {
                             <>
                               <button
                                 onClick={() => startEdit(prod)}
-                                className="bg-amber-500/10 text-amber-700 text-xs px-3 py-1.5 rounded-lg font-bold border border-amber-500/20"
+                                className="bg-amber-500/10 hover:bg-amber-500 text-amber-700 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition border border-amber-500/20"
                               >
                                 Edit ✏️
                               </button>
                               <button
                                 onClick={() => handleDelete(prod.id)}
-                                className="bg-rose-600/10 text-rose-600 text-xs px-3 py-1.5 rounded-lg font-bold border border-rose-600/20"
+                                className="bg-rose-600/10 hover:bg-rose-600 text-rose-600 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition border border-rose-600/20"
                               >
                                 Delete 🗑️
                               </button>
