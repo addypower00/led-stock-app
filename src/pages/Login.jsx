@@ -7,14 +7,13 @@ export default function Login() {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     
-    // 🛡️ Safe check: Custom credentials target karo ya fir root default par fallback karo
     const correctUser = localStorage.getItem("admin_user") || "admin";
     const correctPwd = localStorage.getItem("admin_pwd") || "admin123";
 
     if (username.trim() === correctUser && password === correctPwd) {
       localStorage.setItem("isAuthenticated", "true");
       alert("Access Granted. SCIMS Framework Unlocked! 🔓");
-      window.location.href = "/dashboard"; // Direct refresh redirect to landing node
+      window.location.href = "/dashboard";
     } else {
       alert("Access Denied: Invalid Security Passphrase or Username!");
     }
@@ -79,7 +78,11 @@ export default function Login() {
           </div>
         </form>
 
-        <div className="pt-2 border-t border-slate-800/60">
+        {/* 🌟 Developer Credit on Login Screen */}
+        <div className="pt-4 border-t border-slate-800/60 space-y-1.5">
+          <p className="text-xs font-bold text-slate-300 tracking-wide">
+            👨‍💻 This software is developed by <span className="text-indigo-400 font-extrabold">Aditya Dixit</span>
+          </p>
           <p className="text-[10px] text-slate-500 font-medium font-mono">
             Protected by end-to-end cloud ledger protocol.
           </p>

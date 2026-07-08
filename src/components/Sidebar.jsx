@@ -1,44 +1,79 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function Sidebar() {
-  const navigate = useNavigate();
+  const location = useLocation();
+
+  const menuItems = [
+    { path: "/dashboard", label: "Dashboard", icon: "📊" },
+    { path: "/products", label: "Products Master", icon: "📦" },
+    { path: "/issue", label: "Issue Material", icon: "🚚" },
+    { path: "/return", label: "Return Material", icon: "📥" },
+    { path: "/tech-stock", label: "Tech Hand-Stock", icon: "👷‍♂️" },
+    { path: "/installations", label: "Installation Logs", icon: "📋" },
+    { path: "/security", label: "Security Settings", icon: "🔐" },
+  ];
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout and lock the portal?")) {
-      localStorage.removeItem("isAuthenticated"); // Session khatam!
-      alert("Logged out successfully! Portal is now locked. 🔒");
-      navigate("/"); // Wapas login page par bhejo
+    if (window.confirm("Bhai, kya aap log out karna chahte hain?")) {
+      localStorage.removeItem("isAuthenticated");
+      window.location.href = "/";
     }
   };
 
   return (
-    <div className="fixed inset-y-0 left-0 w-64 bg-gray-900 text-white p-5 space-y-6 hidden lg:block shadow-2xl border-r border-gray-800">
-      <div className="mb-8 text-center border-b border-gray-800 pb-5">
-        <h2 className="text-2xl font-black tracking-wider text-blue-400">SCIMS CONTROL</h2>
-        <p className="text-xs text-gray-400 mt-1">Live Cloud Database v2.0</p>
+    <div className="w-64 bg-slate-950 text-slate-300 min-h-screen flex flex-col border-r border-slate-900 justify-between p-4 z-20">
+      
+      {/* Upper Brand Sector */}
+      <div className="space-y-8">
+        <div className="p-2 border-b border-slate-900">
+          <h2 className="text-xl font-black text-white tracking-wider uppercase flex items-center gap-2">
+            <span className="text-indigo-500">⚡</span> SCIMS CONTROL
+          </h2>
+          <p className="text-[10px] text-slate-500 font-mono tracking-widest mt-0.5">Live Cloud Database v2.4</p>
+        </div>
+
+        {/* Dynamic Navigation Architecture */}
+        <nav className="space-y-1.5">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-sm font-bold tracking-wide transition-all duration-150 ${
+                  isActive
+                    ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/10"
+                    : "hover:bg-slate-900 hover:text-white"
+                }`}
+              >
+                <span className="text-base">{item.icon}</span>
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
       </div>
 
-      <nav className="space-y-2">
-        <Link to="/dashboard" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📊 Dashboard</Link>
-        <Link to="/products" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📦 Products Master</Link>
-        <Link to="/issue-stock" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">🚚 Issue Material</Link>
-        <Link to="/return-stock" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📥 Return Material</Link>
-        <Link to="/technician-stock" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">🧑‍🔧 Tech Hand-Stock</Link>
-        <Link to="/installations" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📺 Installation Logs</Link>
-      <Link to="/security" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
-  <span>🔐</span> Security Settings
-</Link>
-      </nav>
+      {/* Footer Branding Panel with Developer Credit */}
+      <div className="space-y-4 pt-4 border-t border-slate-900">
+        
+        {/* 🌟 Permanent Credit Visible Across ALL Pages */}
+        <div className="p-3 bg-slate-900/40 rounded-xl border border-slate-900 text-center">
+          <p className="text-[10px] uppercase font-black tracking-widest text-slate-500">Framework Author</p>
+          <p className="text-xs font-black text-slate-200 mt-1 tracking-wide">
+            Developed by <span className="text-indigo-400 block mt-0.5">Aditya Dixit</span>
+          </p>
+        </div>
 
-      {/* 🛑 SECURE LOGOUT BUTTON */}
-      <div className="pt-10 border-t border-gray-800">
-        <button 
+        {/* Logout System Button */}
+        <button
           onClick={handleLogout}
-          className="w-full bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white p-3 rounded-xl font-bold transition duration-150 flex items-center justify-center gap-2 border border-red-600/30"
+          className="w-full bg-rose-600/10 hover:bg-rose-600 border border-rose-600/20 text-rose-500 hover:text-white font-bold text-xs p-3.5 rounded-xl transition duration-150 uppercase tracking-wider flex items-center justify-center gap-2"
         >
           🚫 Lock & Logout
         </button>
       </div>
+
     </div>
   );
 }
