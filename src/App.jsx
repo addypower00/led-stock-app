@@ -9,39 +9,16 @@ import Installations from "./pages/Installations";
 import Transactions from "./pages/Transactions";
 import Login from "./pages/Login";
 
-// 🛡️ Strict Route Guard: Ye checking karega ki user logged in hai ya nahi
+// 🛡️ Strict Route Guard
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  
   if (!isAuthenticated) {
-    // 🔥 Agar "isAuthenticated" true nahi hai, to direct login page (/) par bhagao
     return <Navigate to="/" replace />;
   }
   return children;
 };
 
-function App() {
-  return (
-    <Routes>
-      {/* 🔑 Main Base Page: Login Screen */}
-      <Route path="/" element={<Login />} />
-
-      {/* 🔒 Protected Routes: In panno ko bina login koi nahi dekh sakta */}
-      <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
-      <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
-      <Route path="/issue-stock" element={<ProtectedRoute><Layout><IssueStock /></Layout></ProtectedRoute>} />
-      <Route path="/return-stock" element={<ProtectedRoute><Layout><ReturnStock /></Layout></ProtectedRoute>} />
-      <Route path="/technician-stock" element={<ProtectedRoute><Layout><TechnicianStock /></Layout></ProtectedRoute>} />
-      <Route path="/installations" element={<ProtectedRoute><Layout><Installations /></Layout></ProtectedRoute>} />
-      <Route path="/transactions" element={<ProtectedRoute><Layout><Transactions /></Layout></ProtectedRoute>} />
-
-      {/* 🚨 Wrong URL Fallback: Agar koi galat link dale, to bhi login par bhejo */}
-      <Route path="*" replace element={<Navigate to="/" />} />
-    </Routes>
-  );
-}
-
-// 📦 Chota sa Layout Component taaki Sidebar sahi se dikhe
+// 📦 Layout Component jo Sidebar ko set rakhega
 const Layout = ({ children }) => {
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -52,3 +29,26 @@ const Layout = ({ children }) => {
     </div>
   );
 };
+
+function App() {
+  return (
+    <Routes>
+      {/* 🔑 Login Page */}
+      <Route path="/" element={<Login />} />
+
+      {/* 🔒 Protected Routes: Ek-ek karke Layout ke andar wrap kiya */}
+      <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+      <Route path="/products" element={<ProtectedRoute><Layout><Products /></Layout></ProtectedRoute>} />
+      <Route path="/issue-stock" element={<ProtectedRoute><Layout><IssueStock /></Layout></ProtectedRoute>} />
+      <Route path="/return-stock" element={<ProtectedRoute><Layout><ReturnStock /></Layout></ProtectedRoute>} />
+      <Route path="/technician-stock" element={<ProtectedRoute><Layout><TechnicianStock /></Layout></ProtectedRoute>} />
+      <Route path="/installations" element={<ProtectedRoute><Layout><Installations /></Layout></ProtectedRoute>} />
+      <Route path="/transactions" element={<ProtectedRoute><Layout><Transactions /></Layout></ProtectedRoute>} />
+
+      {/* 🚨 Kuch bhi galat ho to Login par phek do */}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
+}
+
+export default App;
