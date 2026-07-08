@@ -6,68 +6,52 @@ export default function Products() {
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
   
-  // Edit State Management
+  // Edit States
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editQuantity, setEditQuantity] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !quantity) return alert("Bhai, saari fields bharna zaroori hai!");
+    if (!name.trim() || !quantity) return alert("Saari fields bharna zaroori hai!");
     
-    // 🛡️ Safe payload data structure targeting both variations (qty and quantity)
-    const productPayload = {
-      name: name.trim(),
-      product_name: name.trim(), // fallback corner case backend keys
-      quantity: Number(quantity),
-      qty: Number(quantity)      // fallback corner case backend keys
-    };
-
     try {
-      await addProduct(productPayload);
+      await addProduct({ name: name.trim(), quantity: Number(quantity) });
       alert("Product successfully ledger me add ho gaya! 📦");
       setName("");
       setQuantity("");
     } catch (error) {
-      console.error("API Error context logging:", error);
-      alert("Database Sync Alert: Agar local storage active hai tab bhi entry pass ho chuki hai!");
+      console.error(error);
+      alert("Database link fail: Ek baar backend api routes check karein.");
     }
   };
 
   const startEdit = (prod) => {
     setEditingId(prod.id);
-    setEditName(prod.name || prod.product_name || "");
-    setEditQuantity(prod.quantity !== undefined ? prod.quantity : (prod.qty !== undefined ? prod.qty : 0));
+    setEditName(prod.product_name || prod.name || "");
+    setEditQuantity(prod.qty ?? prod.quantity ?? 0);
   };
 
   const handleUpdate = async (id) => {
     if (!editName.trim() || !editQuantity) return alert("Fields khali nahi chhod sakte!");
-    
-    const updatePayload = {
-      name: editName.trim(),
-      product_name: editName.trim(),
-      quantity: Number(editQuantity),
-      qty: Number(editQuantity)
-    };
-
     try {
-      await updateProduct(id, updatePayload);
+      await updateProduct(id, { name: editName.trim(), quantity: Number(editQuantity) });
       alert("Product details updated! 🔄");
       setEditingId(null);
     } catch (error) {
       console.error(error);
-      alert("Update pipeline alert processed.");
+      alert("Update failed!");
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Bhai, kya aap sach me is product ko delete karna chahte hain?")) {
+    if (window.confirm("Aditya bhai, kya aap sach me is product ko delete karna chahte hain?")) {
       try {
         await deleteProduct(id);
         alert("Product deleted from ledger! 🚫");
       } catch (error) {
         console.error(error);
-        alert("Delete pipeline alert processed.");
+        alert("Delete failed!");
       }
     }
   };
@@ -80,7 +64,7 @@ export default function Products() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-        {/* 📑 Left side: Form Panel */}
+        {/* Form Panel */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200/60 shadow-sm">
           <h2 className="text-lg font-bold text-gray-800 mb-5 flex items-center gap-2">
             <span>➕</span> Register New Product Line
@@ -110,14 +94,14 @@ export default function Products() {
             </div>
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-500/10 transition duration-150 tracking-wide"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white p-3.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-500/10 transition"
             >
               Commit to Warehouse Ledger
             </button>
           </form>
         </div>
 
-        {/* 📊 Right side: Table Grid */}
+        {/* Table Grid */}
         <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-200/60 shadow-sm overflow-hidden">
           <div className="p-6 border-b border-gray-100">
             <h2 className="text-lg font-bold text-gray-800">Warehouse Master Stock</h2>
@@ -137,9 +121,8 @@ export default function Products() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-sm font-medium text-gray-600">
                   {products.map((prod, index) => {
-                    // Dynamic evaluations for backend structural schemas
-                    const displayQty = prod.quantity !== undefined ? prod.quantity : (prod.qty !== undefined ? prod.qty : (prod.product_quantity !== undefined ? prod.product_quantity : 0));
-                    const displayName = prod.name || prod.product_name || "Unnamed Module";
+                    const displayQty = prod.qty !== undefined ? prod.qty : (prod.quantity !== undefined ? prod.quantity : 0);
+                    const displayName = prod.product_name || prod.name || "Unnamed Module";
                     const isEditing = editingId === prod.id;
 
                     return (
@@ -173,7 +156,7 @@ export default function Products() {
                             <span className={`inline-block font-mono font-bold px-2.5 py-1 rounded-lg text-xs ${
                               displayQty > 0 
                                 ? "bg-emerald-50 text-emerald-700 border border-emerald-100" 
-                                : "bg-rose-50 text-rose-700 border border-rose-100 font-black"
+                                : "bg-rose-50 text-rose-700 border border-rose-100"
                             }`}>
                               {displayQty} pcs
                             </span>
@@ -185,13 +168,13 @@ export default function Products() {
                             <>
                               <button
                                 onClick={() => handleUpdate(prod.id)}
-                                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold transition"
+                                className="bg-emerald-600 text-white text-xs px-2.5 py-1.5 rounded-lg font-bold"
                               >
                                 Save ✅
                               </button>
                               <button
                                 onClick={() => setEditingId(null)}
-                                className="bg-gray-400 hover:bg-gray-50 text-gray-800 text-xs px-2.5 py-1.5 rounded-lg font-bold transition"
+                                className="bg-gray-400 text-gray-800 text-xs px-2.5 py-1.5 rounded-lg font-bold"
                               >
                                 Cancel ❌
                               </button>
@@ -200,13 +183,13 @@ export default function Products() {
                             <>
                               <button
                                 onClick={() => startEdit(prod)}
-                                className="bg-amber-500/10 hover:bg-amber-500 text-amber-700 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition border border-amber-500/20"
+                                className="bg-amber-500/10 text-amber-700 text-xs px-3 py-1.5 rounded-lg font-bold border border-amber-500/20"
                               >
                                 Edit ✏️
                               </button>
                               <button
                                 onClick={() => handleDelete(prod.id)}
-                                className="bg-rose-600/10 hover:bg-rose-600 text-rose-600 hover:text-white text-xs px-3 py-1.5 rounded-lg font-bold transition border border-rose-600/20"
+                                className="bg-rose-600/10 text-rose-600 text-xs px-3 py-1.5 rounded-lg font-bold border border-rose-600/20"
                               >
                                 Delete 🗑️
                               </button>
@@ -220,7 +203,7 @@ export default function Products() {
               </table>
             ) : (
               <div className="p-12 text-center text-gray-400">
-                <p className="text-sm font-medium">Warehouse database is empty. Register a product to begin auditing.</p>
+                <p className="text-sm font-medium">Warehouse database is empty.</p>
               </div>
             )}
           </div>
