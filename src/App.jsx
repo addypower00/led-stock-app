@@ -8,6 +8,7 @@ import TechnicianStock from "./pages/TechnicianStock";
 import Installations from "./pages/Installations";
 import Transactions from "./pages/Transactions";
 import Login from "./pages/Login";
+import SecuritySettings from "./pages/SecuritySettings";
 
 // 🛡️ Strict Route Guard
 const ProtectedRoute = ({ children }) => {
@@ -39,6 +40,7 @@ function App() {
       <Route path="/technician-stock" element={<ProtectedRoute><TechnicianStock /></ProtectedRoute>} />
       <Route path="/installations" element={<ProtectedRoute><Installations /></ProtectedRoute>} />
       <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+      <Route path="/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />

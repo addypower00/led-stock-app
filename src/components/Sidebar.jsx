@@ -25,6 +25,9 @@ export default function Sidebar() {
         <Link to="/return-stock" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📥 Return Material</Link>
         <Link to="/technician-stock" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">🧑‍🔧 Tech Hand-Stock</Link>
         <Link to="/installations" className="block p-3 rounded-xl font-semibold hover:bg-gray-800 transition">📺 Installation Logs</Link>
+      <Link to="/security" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition">
+  <span>🔐</span> Security Settings
+</Link>
       </nav>
 
       {/* 🛑 SECURE LOGOUT BUTTON */}
