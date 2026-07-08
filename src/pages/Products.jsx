@@ -74,7 +74,7 @@ export default function Products() {
               <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2">Item Label / Specification</label>
               <input
                 type="text"
-                placeholder="e.g., 32\" Wall Mount"
+                placeholder="e.g., 32-inch Wall Mount"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border border-gray-200 p-3.5 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition"
@@ -121,7 +121,6 @@ export default function Products() {
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-sm font-medium text-gray-600">
                   {products.map((prod, index) => {
-                    // Smart check for quantity parameters coming from backend
                     const displayQty = prod.quantity !== undefined ? prod.quantity : (prod.qty !== undefined ? prod.qty : 0);
                     const isEditing = editingId === prod.id;
 
