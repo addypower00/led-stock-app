@@ -9,7 +9,7 @@ import Installations from "./pages/Installations";
 import Transactions from "./pages/Transactions";
 import Login from "./pages/Login";
 
-// 🛡️ Strict Route Guard: Agar user logged in nahi hai, toh use login (/) par phek do
+// 🛡️ Strict Route Guard
 const ProtectedRoute = ({ children }) => {
   const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
   if (!isAuthenticated) {
@@ -18,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <Sidebar />
-      <div className="flex-1 lg:ml-64 transition-all duration-300">
+      <div className="flex-1 lg:ml-64 p-4 transition-all duration-300">
         {children}
       </div>
     </div>
@@ -28,10 +28,10 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
-      {/* 🔑 Open Route: Login Page */}
+      {/* 🔑 Login page par koi checking ya layout nahi hai, ye turant khulegi */}
       <Route path="/" element={<Login />} />
 
-      {/* 🔒 Protected Routes: Inme bina login ke entry band */}
+      {/* 🔒 Protected Routes */}
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
       <Route path="/issue-stock" element={<ProtectedRoute><IssueStock /></ProtectedRoute>} />
@@ -40,7 +40,7 @@ function App() {
       <Route path="/installations" element={<ProtectedRoute><Installations /></ProtectedRoute>} />
       <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
 
-      {/* 🚨 Kuch bhi galat URL ho to seedhe Login Page par bhej do */}
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
