@@ -28,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <Routes>
-      {/* 🔑 Login page par koi checking ya layout nahi hai, ye turant khulegi */}
+      {/* 🔑 Open Login Route */}
       <Route path="/" element={<Login />} />
 
       {/* 🔒 Protected Routes */}
